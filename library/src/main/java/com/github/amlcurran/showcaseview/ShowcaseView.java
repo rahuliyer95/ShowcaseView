@@ -43,7 +43,7 @@ import static com.github.amlcurran.showcaseview.AnimationFactory.AnimationStartL
  * A view which allows you to showcase areas of your app with an explanation.
  */
 public class ShowcaseView extends RelativeLayout
-        implements View.OnTouchListener, ShowcaseViewApi {
+        implements View.OnClickListener, View.OnTouchListener, ViewTreeObserver.OnPreDrawListener, ViewTreeObserver.OnGlobalLayoutListener {
 
     private static final int HOLO_BLUE = Color.parseColor("#33B5E5");
 
@@ -67,6 +67,8 @@ public class ShowcaseView extends RelativeLayout
 
     private boolean hasAlteredText = false;
     private boolean hasNoTarget = false;
+    private Target pendingTarget = null;
+    private boolean isAnimated = false;
     private boolean shouldCentreText;
     private Bitmap bitmapBuffer;
 
@@ -88,8 +90,8 @@ public class ShowcaseView extends RelativeLayout
         shotStateStore = new ShotStateStore(context);
 
         apiUtils.setFitsSystemWindowsCompat(this);
-        getViewTreeObserver().addOnPreDrawListener(new CalculateTextOnPreDraw());
-        getViewTreeObserver().addOnGlobalLayoutListener(new UpdateOnGlobalLayout());
+        getViewTreeObserver().addOnPreDrawListener(this);
+        getViewTreeObserver().addOnGlobalLayoutListener(this);
 
         // Get the attributes for the ShowcaseView
         final TypedArray styled = context.getTheme()
@@ -126,7 +128,7 @@ public class ShowcaseView extends RelativeLayout
             mEndButton.setLayoutParams(lps);
             mEndButton.setText(android.R.string.ok);
             if (!hasCustomClickListener) {
-                mEndButton.setOnClickListener(hideOnClickListener);
+                mEndButton.setOnClickListener(this);
             }
             addView(mEndButton);
         }
@@ -181,6 +183,24 @@ public class ShowcaseView extends RelativeLayout
         		bitmapBuffer.recycle();
             bitmapBuffer = Bitmap.createBitmap(getMeasuredWidth(), getMeasuredHeight(), Bitmap.Config.ARGB_8888);
 
+        }
+    }
+
+    private void updatePosition() {
+        if(pendingTarget != null) {
+            Point targetPoint = pendingTarget.getPoint();
+            if (targetPoint != null && (targetPoint.x != 0 || targetPoint.y != 0)) {
+                hasNoTarget = false;
+                if (isAnimated) {
+                    animationFactory.animateTargetToPoint(ShowcaseView.this, targetPoint);
+                } else {
+                    setShowcasePosition(targetPoint);
+                }
+                pendingTarget = null;
+            } else {
+                hasNoTarget = true;
+                invalidate();
+            }
         }
     }
 
@@ -276,6 +296,10 @@ public class ShowcaseView extends RelativeLayout
     }
 
     @Override
+    public void onClick(View view) {
+        hide();
+    }
+
     public void hide() {
         clearBitmap();
         // If the type is set to one-shot, store that it has shot
@@ -362,6 +386,14 @@ public class ShowcaseView extends RelativeLayout
 
     private void setScaleMultiplier(float scaleMultiplier) {
         this.scaleMultiplier = scaleMultiplier;
+    }
+
+    @Override
+    public void onGlobalLayout() {
+        if (!shotStateStore.hasShot()) {
+            updateBitmap();
+            updatePosition();
+        }
     }
 
     public void hideButton() {
