@@ -679,4 +679,14 @@ public class ShowcaseView extends RelativeLayout
         }
     };
 
+    @Override
+    public void setInnerCircleRadius(float innerRadius) {
+        showcaseDrawer.setInnerCircleRadius(innerRadius);
+    }
+
+
+    @Override
+    public void setOuterCircleRadius(float outerRadius) {
+        showcaseDrawer.setOuterCircleRadius(outerRadius);
+    }
 }
