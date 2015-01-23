@@ -3,7 +3,6 @@ package com.github.amlcurran.showcaseview;
 import android.app.Activity;
 import android.os.Handler;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.github.amlcurran.showcaseview.targets.Target;
 
@@ -12,7 +11,7 @@ import java.util.List;
 
 public class ShowcaseViews {
 
-    private final List<ShowcaseView> views = new ArrayList<ShowcaseView>();
+    private final List<ShowcaseView.Builder> views = new ArrayList<ShowcaseView.Builder>();
     private final Activity activity;
     private OnShowcaseAcknowledged showcaseAcknowledgedListener = new OnShowcaseAcknowledged() {
         @Override
@@ -51,9 +50,7 @@ public class ShowcaseViews {
         if (properties.theme != -1)
             builder.setStyle(properties.theme);
 
-        ShowcaseView showcaseView = builder.build();
-        showcaseView.overrideButtonClick(createShowcaseViewDismissListener(showcaseView));
-        views.add(showcaseView);
+        views.add(builder);
 
         return this;
     }
@@ -62,7 +59,7 @@ public class ShowcaseViews {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showcaseView.onClick(showcaseView); //Needed for TYPE_ONE_SHOT
+                showcaseView.hide();
                 long fadeOutTime = showcaseView.getFadeOutMillis();
                 if (fadeOutTime > 0) {
                     final Handler handler = new Handler();
@@ -91,12 +88,8 @@ public class ShowcaseViews {
         if (views.isEmpty()) {
             return;
         }
-        final ShowcaseView view = views.get(0);
-
-        view.setVisibility(View.GONE);
-        ((ViewGroup) activity.getWindow().getDecorView()).addView(view);
-        view.show();
-
+        final ShowcaseView view = views.get(0).build();
+        view.overrideButtonClick(createShowcaseViewDismissListener(view));
         views.remove(0);
     }
 
