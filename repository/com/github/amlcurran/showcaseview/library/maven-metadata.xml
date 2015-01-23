@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>com.github.amlcurran.showcaseview</groupId>
+  <artifactId>library</artifactId>
+  <version>5.1.1-SNAPSHOT</version>
+  <versioning>
+    <versions>
+      <version>5.1.1-SNAPSHOT</version>
+      <version>5.2-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20150123170249</lastUpdated>
+  </versioning>
+</metadata>
