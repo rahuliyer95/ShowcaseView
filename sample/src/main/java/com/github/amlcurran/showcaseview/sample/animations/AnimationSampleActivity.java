@@ -16,8 +16,11 @@
 
 package com.github.amlcurran.showcaseview.sample.animations;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -30,7 +33,7 @@ import com.github.amlcurran.showcaseview.targets.ViewTarget;
 /**
  * Created by Alex on 26/10/13.
  */
-public class AnimationSampleActivity extends Activity implements View.OnClickListener {
+public class AnimationSampleActivity extends ActionBarActivity implements View.OnClickListener {
 
     private ShowcaseView showcaseView;
     private int counter = 0;
@@ -44,17 +47,41 @@ public class AnimationSampleActivity extends Activity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_animation);
 
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         textView1 = (TextView) findViewById(R.id.textView);
         textView2 = (TextView) findViewById(R.id.textView2);
         textView3 = (TextView) findViewById(R.id.textView3);
 
-        showcaseView = new ShowcaseView.Builder(this)
-                .setTarget(new ViewTarget(findViewById(R.id.textView)))
-                .setOnClickListener(this)
-                .build();
-        showcaseView.setButtonText(getString(R.string.next));
     }
 
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        if (savedInstanceState == null) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    showcaseView = new ShowcaseView.Builder(AnimationSampleActivity.this)
+                            .setTarget(new ViewTarget(findViewById(R.id.textView)))
+                            .setOnClickListener(AnimationSampleActivity.this)
+                            .build();
+                    showcaseView.setButtonText(getString(R.string.next));
+                }
+            }, 300);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     private void setAlpha(float alpha, View... views) {
         if (apiUtils.isCompatWithHoneycomb()) {

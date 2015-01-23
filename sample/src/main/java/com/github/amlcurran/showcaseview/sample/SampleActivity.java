@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -30,7 +31,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.amlcurran.showcaseview.ApiUtils;
@@ -65,7 +65,26 @@ public class SampleActivity extends ActionBarActivity implements View.OnClickLis
 
         buttonBlocked = (Button) findViewById(R.id.buttonBlocked);
         buttonBlocked.setOnClickListener(this);
+    }
 
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        if (savedInstanceState == null) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    ViewTarget target = new ViewTarget(R.id.buttonBlocked, SampleActivity.this);
+                    sv = new ShowcaseView.Builder(SampleActivity.this, true)
+                            .setTarget(target)
+                            .setContentTitle(R.string.showcase_main_title)
+                            .setContentText(R.string.showcase_main_message)
+                            .setStyle(R.style.CustomShowcaseTheme2)
+                            .setShowcaseEventListener(SampleActivity.this)
+                            .build();
+                }
+            }, 300);
+        }
 
     }
 
@@ -78,22 +97,6 @@ public class SampleActivity extends ActionBarActivity implements View.OnClickLis
 
     @Override
     public void onClick(View view) {
-
-        RelativeLayout.LayoutParams lps = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lps.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        lps.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-        int margin = ((Number) (getResources().getDisplayMetrics().density * 12)).intValue();
-        lps.setMargins(margin, margin, margin, margin);
-
-        ViewTarget target = new ViewTarget(R.id.buttonBlocked, this);
-        sv = new ShowcaseView.Builder(this, true)
-                .setTarget(target)
-                .setContentTitle(R.string.showcase_main_title)
-                .setContentText(R.string.showcase_main_message)
-//                .setStyle(R.style.CustomShowcaseTheme2)
-                .setShowcaseEventListener(this)
-                .build();
-//        sv.setButtonPosition(lps);
 
         int viewId = view.getId();
         switch (viewId) {
@@ -132,7 +135,7 @@ public class SampleActivity extends ActionBarActivity implements View.OnClickLis
         switch (position) {
 
             case 0:
-                //startActivity(new Intent(this, ActionItemsSampleActivity.class));
+                startActivity(new Intent(this, MultipleShowcaseSampleActivity.class));
                 break;
 
             case 1:
@@ -152,13 +155,13 @@ public class SampleActivity extends ActionBarActivity implements View.OnClickLis
     private static class HardcodedListAdapter extends ArrayAdapter {
 
         private static final int[] TITLE_RES_IDS = new int[] {
-                R.string.title_action_items,
+                R.string.title_multiple,
                 R.string.title_animations,
                 R.string.title_single_shot//, R.string.title_memory
         };
 
         private static final int[] SUMMARY_RES_IDS = new int[] {
-                R.string.sum_action_items,
+                R.string.sum_multiple,
                 R.string.sum_animations,
                 R.string.sum_single_shot//, R.string.sum_memory
         };

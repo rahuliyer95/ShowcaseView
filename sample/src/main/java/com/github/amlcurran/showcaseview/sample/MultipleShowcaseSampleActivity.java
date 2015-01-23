@@ -17,7 +17,9 @@
 package com.github.amlcurran.showcaseview.sample;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -35,6 +37,9 @@ public class MultipleShowcaseSampleActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sample_multiple_showcase);
 
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         findViewById(R.id.buttonLike).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -42,23 +47,35 @@ public class MultipleShowcaseSampleActivity extends ActionBarActivity {
             }
         });
 
-        mViews = new ShowcaseViews(this,
-                new ShowcaseViews.OnShowcaseAcknowledged() {
-            @Override
-            public void onShowCaseAcknowledged(ShowcaseView showcaseView) {
-                Toast.makeText(MultipleShowcaseSampleActivity.this, R.string.dismissed_message, Toast.LENGTH_SHORT).show();
-            }
-        });
-        mViews.addView( new ShowcaseViews.ItemViewProperties(new ViewTarget(findViewById(R.id.image)),
-                R.string.showcase_image_title,
-                R.string.showcase_image_message));
 
-        mViews.addView( new ShowcaseViews.ItemViewProperties(new ViewTarget(findViewById(R.id.buttonLike)),
-                R.string.showcase_like_title,
-                R.string.showcase_like_message));
+    }
 
-        mViews.show();
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        if (savedInstanceState == null) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mViews = new ShowcaseViews(MultipleShowcaseSampleActivity.this,
+                            new ShowcaseViews.OnShowcaseAcknowledged() {
+                                @Override
+                                public void onShowCaseAcknowledged(ShowcaseView showcaseView) {
+                                    Toast.makeText(MultipleShowcaseSampleActivity.this, R.string.dismissed_message, Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                    mViews.addView(new ShowcaseViews.ItemViewProperties(new ViewTarget(findViewById(R.id.image)),
+                            R.string.showcase_image_title,
+                            R.string.showcase_image_message));
 
+                    mViews.addView(new ShowcaseViews.ItemViewProperties(new ViewTarget(findViewById(R.id.buttonLike)),
+                            R.string.showcase_like_title,
+                            R.string.showcase_like_message));
+
+                    mViews.show();
+                }
+            }, 300);
+        }
     }
 
     @Override
