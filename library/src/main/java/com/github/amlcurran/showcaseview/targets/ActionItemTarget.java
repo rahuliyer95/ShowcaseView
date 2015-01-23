@@ -18,6 +18,7 @@ package com.github.amlcurran.showcaseview.targets;
 
 import android.app.Activity;
 import android.graphics.Point;
+import android.view.View;
 import android.view.ViewParent;
 
 /**

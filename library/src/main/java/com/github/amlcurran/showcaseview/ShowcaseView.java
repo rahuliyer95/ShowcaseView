@@ -43,7 +43,7 @@ import static com.github.amlcurran.showcaseview.AnimationFactory.AnimationStartL
  * A view which allows you to showcase areas of your app with an explanation.
  */
 public class ShowcaseView extends RelativeLayout
-        implements View.OnClickListener, View.OnTouchListener, ViewTreeObserver.OnPreDrawListener, ViewTreeObserver.OnGlobalLayoutListener {
+        implements ShowcaseViewApi, View.OnClickListener, View.OnTouchListener, ViewTreeObserver.OnPreDrawListener, ViewTreeObserver.OnGlobalLayoutListener {
 
     private static final int HOLO_BLUE = Color.parseColor("#33B5E5");
 
@@ -407,6 +407,11 @@ public class ShowcaseView extends RelativeLayout
         mEndButton.setVisibility(VISIBLE);
     }
 
+    @Override
+    public boolean onPreDraw() {
+        return false;
+    }
+
     /**
      * Builder class which allows easier creation of {@link ShowcaseView}s.
      * It is recommended that you use this Builder class.
@@ -689,4 +694,13 @@ public class ShowcaseView extends RelativeLayout
     public void setOuterCircleRadius(float outerRadius) {
         showcaseDrawer.setOuterCircleRadius(outerRadius);
     }
+
+    protected long getFadeOutMillis() {
+        return fadeOutMillis;
+    }
+
+    protected long getFadeInMillis() {
+        return fadeInMillis;
+    }
+
 }
