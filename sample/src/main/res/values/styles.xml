@@ -17,7 +17,11 @@
 
 <resources>
 
-    <style name="CompatDarkActionBarTheme" parent="android:Theme.Holo.Light" />
+    <style name="CompatDarkActionBarTheme" parent="Theme.AppCompat">
+        <item name="windowActionModeOverlay">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
 
     <style name="CustomShowcaseTheme" parent="ShowcaseView.Light">
         <item name="sv_backgroundColor">#3300A621</item>
@@ -58,7 +62,7 @@
     </style>
 
     <style name="ListItemBigtext">
-        <item name="android:textColor">#25467A</item>
+        <item name="android:textColor">#03A9F4</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
         <item name="android:fontFamily">sans-serif-light</item>
         <item name="android:textStyle">italic</item>
@@ -66,7 +70,7 @@
 
     <style name="ListItemSubtext">
         <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
-        <item name="android:textColor">?android:attr/textColorSecondary</item>
+        <item name="android:textColor">#00BCD4</item>
     </style>
 
 </resources>

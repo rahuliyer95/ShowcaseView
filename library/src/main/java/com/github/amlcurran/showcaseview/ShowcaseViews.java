@@ -35,7 +35,7 @@ public class ShowcaseViews {
     }
 
     public ShowcaseViews addView(ItemViewProperties properties) {
-        ShowcaseView.Builder builder = new ShowcaseView.Builder(activity);
+        ShowcaseView.Builder builder = new ShowcaseView.Builder(activity, true);
         builder.setContentTitle(properties.titleResId);
         builder.setContentText(properties.messageResId);
         builder.setTarget(properties.target);

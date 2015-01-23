@@ -17,11 +17,12 @@
 package com.github.amlcurran.showcaseview.sample;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +39,7 @@ import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.sample.animations.AnimationSampleActivity;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
-public class SampleActivity extends Activity implements View.OnClickListener,
+public class SampleActivity extends ActionBarActivity implements View.OnClickListener,
         OnShowcaseEventListener, AdapterView.OnItemClickListener {
 
     private static final float ALPHA_DIM_VALUE = 0.1f;
@@ -52,7 +53,10 @@ public class SampleActivity extends Activity implements View.OnClickListener,
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.activity_sample);
+
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
         HardcodedListAdapter adapter = new HardcodedListAdapter(this);
         listView = (ListView) findViewById(R.id.listView);
@@ -61,6 +65,19 @@ public class SampleActivity extends Activity implements View.OnClickListener,
 
         buttonBlocked = (Button) findViewById(R.id.buttonBlocked);
         buttonBlocked.setOnClickListener(this);
+
+
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    private void dimView(View view) {
+        if (apiUtils.isCompatWithHoneycomb()) {
+            view.setAlpha(ALPHA_DIM_VALUE);
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
 
         RelativeLayout.LayoutParams lps = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lps.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
@@ -73,21 +90,10 @@ public class SampleActivity extends Activity implements View.OnClickListener,
                 .setTarget(target)
                 .setContentTitle(R.string.showcase_main_title)
                 .setContentText(R.string.showcase_main_message)
-                .setStyle(R.style.CustomShowcaseTheme2)
+//                .setStyle(R.style.CustomShowcaseTheme2)
                 .setShowcaseEventListener(this)
                 .build();
-        sv.setButtonPosition(lps);
-    }
-
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    private void dimView(View view) {
-        if (apiUtils.isCompatWithHoneycomb()) {
-            view.setAlpha(ALPHA_DIM_VALUE);
-        }
-    }
-
-    @Override
-    public void onClick(View view) {
+//        sv.setButtonPosition(lps);
 
         int viewId = view.getId();
         switch (viewId) {
