@@ -43,7 +43,7 @@ import static com.github.amlcurran.showcaseview.AnimationFactory.AnimationStartL
  * A view which allows you to showcase areas of your app with an explanation.
  */
 public class ShowcaseView extends RelativeLayout
-        implements ShowcaseViewApi, View.OnClickListener, View.OnTouchListener, ViewTreeObserver.OnPreDrawListener, ViewTreeObserver.OnGlobalLayoutListener {
+        implements View.OnTouchListener, ShowcaseViewApi {
 
     private static final int HOLO_BLUE = Color.parseColor("#33B5E5");
 
@@ -90,8 +90,8 @@ public class ShowcaseView extends RelativeLayout
         shotStateStore = new ShotStateStore(context);
 
         apiUtils.setFitsSystemWindowsCompat(this);
-        getViewTreeObserver().addOnPreDrawListener(this);
-        getViewTreeObserver().addOnGlobalLayoutListener(this);
+        getViewTreeObserver().addOnPreDrawListener(new CalculateTextOnPreDraw());
+        getViewTreeObserver().addOnGlobalLayoutListener(new UpdateOnGlobalLayout());
 
         // Get the attributes for the ShowcaseView
         final TypedArray styled = context.getTheme()
@@ -128,7 +128,7 @@ public class ShowcaseView extends RelativeLayout
             mEndButton.setLayoutParams(lps);
             mEndButton.setText(android.R.string.ok);
             if (!hasCustomClickListener) {
-                mEndButton.setOnClickListener(this);
+                mEndButton.setOnClickListener(hideOnClickListener);
             }
             addView(mEndButton);
         }
@@ -299,10 +299,6 @@ public class ShowcaseView extends RelativeLayout
     }
 
     @Override
-    public void onClick(View view) {
-        hide();
-    }
-
     public void hide() {
         clearBitmap();
         // If the type is set to one-shot, store that it has shot
@@ -391,25 +387,12 @@ public class ShowcaseView extends RelativeLayout
         this.scaleMultiplier = scaleMultiplier;
     }
 
-    @Override
-    public void onGlobalLayout() {
-        if (!shotStateStore.hasShot()) {
-            updateBitmap();
-            updatePosition();
-        }
-    }
-
     public void hideButton() {
         mEndButton.setVisibility(GONE);
     }
 
     public void showButton() {
         mEndButton.setVisibility(VISIBLE);
-    }
-
-    @Override
-    public boolean onPreDraw() {
-        return false;
     }
 
     /**
