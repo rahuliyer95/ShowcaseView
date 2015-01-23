@@ -94,7 +94,7 @@ afterEvaluate { project ->
         sign configurations.archives
     }
 
-    task uploadGithub(type: Upload) {
+    task githubUpload(type: Upload) {
         description "Installs the artifacts to the local github location."
         configuration = configurations['archives']
         repositories {
@@ -103,9 +103,18 @@ afterEvaluate { project ->
                 pom.artifactId = POM_ARTIFACT_ID
                 pom.version = VERSION_NAME
                 
-                repository url: "file://${System.properties['user.home']}/work/Libraries/ShowcaseView-repo/repository"
+                repository url: "file://$projectDir/../ShowcaseView-repo/repository"
             }
         }
+    }
+
+    task githubExec(type: Exec) {
+        executable "sh"
+        args "$projectDir/../../push-showcaseview-repo"
+    }
+
+    task github(dependsOn: ['githubUpload', 'githubExec']) {
+        githubExec.mustRunAfter githubUpload
     }
 
     task apklib(type: Zip) {
