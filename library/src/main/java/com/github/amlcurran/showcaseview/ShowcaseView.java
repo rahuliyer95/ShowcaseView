@@ -380,7 +380,7 @@ public class ShowcaseView extends RelativeLayout
                     showcaseView.setPadding(0, 0, ApiUtils.getSoftButtonsBarSizeLand(activity), 0);
                     break;
                 case Surface.ROTATION_180:
-                    showcaseView.setPadding(0, 0, ApiUtils.getSoftButtonsBarSizeLand(activity), 0);
+                    showcaseView.setPadding(0, 0, 0, ApiUtils.getSoftButtonsBarSizePort(activity));
                     break;
                 case Surface.ROTATION_270:
                     showcaseView.setPadding(0, 0, ApiUtils.getSoftButtonsBarSizeLand(activity), 0);
