@@ -103,7 +103,7 @@ afterEvaluate { project ->
                 pom.artifactId = POM_ARTIFACT_ID
                 pom.version = VERSION_NAME
                 
-                repository url: "file://$projectDir/../../ShowcaseView-repo/repository"
+                repository url: "file://$projectDir/../../repo/repository"
             }
         }
     }
